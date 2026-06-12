@@ -2,11 +2,11 @@ import asyncio
 import io
 import zipfile
 
-from fastapi import APIRouter, File, HTTPException, UploadFile
+from fastapi import APIRouter, File, HTTPException, UploadFile, Header
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
-from ..deps import get_markitdown, get_ocr_status
+from ..deps import get_markitdown, get_ocr_status, get_custom_markitdown
 from ..utils import (
     MAX_FILE_SIZE,
     MAX_FILES_PER_BATCH,
@@ -24,7 +24,12 @@ router = APIRouter()
 # POST /api/convert/file
 # ---------------------------------------------------------------------------
 @router.post("/convert/file")
-async def convert_file(files: list[UploadFile] = File(...)):
+async def convert_file(
+    files: list[UploadFile] = File(...),
+    x_llm_api_key: str | None = Header(None),
+    x_llm_base_url: str | None = Header(None),
+    x_llm_model: str | None = Header(None),
+):
     """Upload one or more files and convert each to Markdown."""
     # Validate batch size
     if len(files) > MAX_FILES_PER_BATCH:
@@ -33,7 +38,15 @@ async def convert_file(files: list[UploadFile] = File(...)):
             detail=f"Maximum {MAX_FILES_PER_BATCH} files per batch",
         )
 
-    md = get_markitdown()
+    if x_llm_api_key:
+        md = get_custom_markitdown(
+            api_key=x_llm_api_key,
+            base_url=x_llm_base_url or "",
+            model=x_llm_model or "gpt-4o"
+        )
+    else:
+        md = get_markitdown()
+        
     results: list[ConversionResult] = []
 
     for file in files:
@@ -72,14 +85,26 @@ class UrlRequest(BaseModel):
 # POST /api/convert/url
 # ---------------------------------------------------------------------------
 @router.post("/convert/url")
-async def convert_url(request: UrlRequest):
+async def convert_url(
+    request: UrlRequest,
+    x_llm_api_key: str | None = Header(None),
+    x_llm_base_url: str | None = Header(None),
+    x_llm_model: str | None = Header(None),
+):
     """Fetch a URL and convert its content to Markdown."""
     try:
         url = validate_url(request.url)
     except ValueError as e:
         raise HTTPException(status_code=422, detail=str(e)) from e
 
-    md = get_markitdown()
+    if x_llm_api_key:
+        md = get_custom_markitdown(
+            api_key=x_llm_api_key,
+            base_url=x_llm_base_url or "",
+            model=x_llm_model or "gpt-4o"
+        )
+    else:
+        md = get_markitdown()
 
     try:
         # Run convert_uri with a timeout to prevent hanging on slow URLs

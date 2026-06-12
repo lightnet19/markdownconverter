@@ -36,3 +36,11 @@ This document maps out the phases of the Markdown Converter web application deve
 - Re-architected files list, upload drop zones, results toolbar, and code editor panes with glassmorphic elements, modern gradients, hover animations, and cohesive light/dark theme variables.
 - Optimized and verified layout responsiveness for mobile devices (375x812 viewport) including adaptive logo headers and typography scaling.
 - Added a styled footer crediting "Made with love by alfajri" linking to https://alfajri.my.id/.
+
+### Phase 15: User-Provided LLM API Key for OCR — COMPLETE
+- Added an "Advanced Options (OCR & LLM)" accordion component on the frontend directly below the input panels.
+- Configured frontend to store LLM settings (API Key, Base URL, Model Name) in `localStorage`.
+- Updated requests to include custom headers (`X-LLM-API-Key`, `X-LLM-Base-URL`, `X-LLM-Model`).
+- Created a factory function on the backend to dynamically instantiate a user-specific `MarkItDown` instance using their credentials.
+- Updated endpoints (`/api/convert/file` and `/api/convert/url`) to process headers and fallback to global setup when custom headers are missing.
+- Enabled compatibility with international/Chinese LLMs (such as DeepSeek, Kimi, Qwen) using the custom Base URL and Model Name fields.

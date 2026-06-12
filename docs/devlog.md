@@ -1,5 +1,25 @@
 # Developer Log (devlog.md)
 
+## [2026-06-12] Phase 15: User-Provided LLM API Key for OCR — Implemented
+### Summary
+Added support for user-provided LLM API Keys, Base URLs, and Model Names directly on the frontend. The backend dynamically instantiates user-specific `MarkItDown` clients for requests containing these credentials, enabling decentralized OCR processing without globally configured keys. This approach natively supports any OpenAI-compatible endpoints, including Chinese LLM providers such as DeepSeek, Moonshot/Kimi, DashScope/Qwen, and local engines.
+
+### Detailed Actions
+1. **Frontend Accordion**: Created a new "Advanced Options (OCR & LLM)" accordion below the main input/URL panels in `index.html` to keep settings easily accessible but hidden by default.
+2. **Settings Inputs**: Added input fields for API Key (password type), Base URL, and Model Name (defaulting to `gpt-4o`).
+3. **State Persistence**: Wired input event listeners in `js/app.js` to persist and load these credentials to/from the browser's `localStorage`.
+4. **Header Propagation**: Configured both XMLHttpRequest (for files batch) and Fetch (for URL converters) to attach the custom headers: `X-LLM-API-Key`, `X-LLM-Base-URL`, and `X-LLM-Model`.
+5. **Backend Dependency Factory**: Created a new factory function `get_custom_markitdown(api_key, base_url, model)` in `backend/deps.py` that dynamically imports `openai` and generates custom `MarkItDown` engines.
+6. **Dynamic Endpoint Evaluation**: Updated `convert_file` and `convert_url` router endpoints in `backend/routers/convert.py` to accept the request headers and spawn custom clients on-demand.
+
+### Verification & Validation
+- Verified layout and UI styles across light and dark modes.
+- Checked that accordion state opens and closes correctly on click.
+- Verified that API credentials persist properly in `localStorage`.
+- Verified that dynamic request-specific headers are successfully parsed and applied on the backend, enabling the use of OpenAI-compatible APIs (like DeepSeek, Kimi, local LLMs) for vision/OCR conversions.
+
+---
+
 ## [2026-06-12] Phase 14: Ultra-Premium Modern SaaS UI Redesign — Implemented
 ### Summary
 Completed the visual overhaul of the Markdown Converter web app, transforming it into an ultra-premium modern SaaS application. The styling is now glassmorphic, responsive, utilizing premium typography, floating ambient glow elements, and dynamic micro-animations.

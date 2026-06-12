@@ -73,6 +73,25 @@ def get_markitdown() -> MarkItDown:
     return _md
 
 
+def get_custom_markitdown(api_key: str, base_url: str = "", model: str = "gpt-4o") -> MarkItDown:
+    """Create a temporary MarkItDown instance using a user-provided LLM API Key."""
+    kwargs = {}
+    try:
+        from openai import OpenAI
+        if base_url:
+            llm_client = OpenAI(api_key=api_key, base_url=base_url)
+        else:
+            llm_client = OpenAI(api_key=api_key)
+        kwargs["enable_plugins"] = True
+        kwargs["llm_client"] = llm_client
+        kwargs["llm_model"] = model
+        log.info("Created custom MarkItDown instance with user API key for model: %s", model)
+    except Exception as e:
+        log.warning("Failed to initialize custom MarkItDown instance: %s", e)
+        
+    return MarkItDown(**kwargs)
+
+
 def get_ocr_status() -> dict:
     """Return current OCR status for health endpoint."""
     return {

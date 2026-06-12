@@ -48,6 +48,36 @@
   const toastContainer = $('#toastContainer');
   const editorStats = $('#editorStats');
 
+  // ---- Advanced Options / LLM Settings ----
+  const advancedOptionsBtn = $('#advancedOptionsBtn');
+  const advancedOptionsContent = $('#advancedOptionsContent');
+  const llmApiKey = $('#llmApiKey');
+  const llmBaseUrl = $('#llmBaseUrl');
+  const llmModel = $('#llmModel');
+
+  advancedOptionsBtn.addEventListener('click', function() {
+    const isExpanded = advancedOptionsBtn.getAttribute('aria-expanded') === 'true';
+    advancedOptionsBtn.setAttribute('aria-expanded', !isExpanded);
+    advancedOptionsContent.hidden = isExpanded;
+  });
+
+  function initLlmSettings() {
+    llmApiKey.value = localStorage.getItem('markitdown-llm-key') || '';
+    llmBaseUrl.value = localStorage.getItem('markitdown-llm-base') || '';
+    llmModel.value = localStorage.getItem('markitdown-llm-model') || 'gpt-4o';
+
+    const saveSettings = () => {
+      localStorage.setItem('markitdown-llm-key', llmApiKey.value.trim());
+      localStorage.setItem('markitdown-llm-base', llmBaseUrl.value.trim());
+      localStorage.setItem('markitdown-llm-model', llmModel.value.trim() || 'gpt-4o');
+    };
+
+    llmApiKey.addEventListener('input', saveSettings);
+    llmBaseUrl.addEventListener('input', saveSettings);
+    llmModel.addEventListener('input', saveSettings);
+  }
+  initLlmSettings();
+
   // ---- OCR Status Check ----
   async function checkOcrStatus() {
     try {
@@ -319,6 +349,15 @@
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '/api/convert/file');
 
+    var key = llmApiKey.value.trim();
+    if (key) {
+      xhr.setRequestHeader('X-LLM-API-Key', key);
+      var base = llmBaseUrl.value.trim();
+      if (base) xhr.setRequestHeader('X-LLM-Base-URL', base);
+      var model = llmModel.value.trim();
+      if (model) xhr.setRequestHeader('X-LLM-Model', model);
+    }
+
     xhr.upload.onprogress = function (e) {
       if (e.lengthComputable) {
         var pct = Math.round((e.loaded / e.total) * 100);
@@ -385,9 +424,19 @@
       var controller = new AbortController();
       var timeoutId = setTimeout(function () { controller.abort(); }, 60000);
 
+      var headers = { 'Content-Type': 'application/json' };
+      var key = llmApiKey.value.trim();
+      if (key) {
+        headers['X-LLM-API-Key'] = key;
+        var base = llmBaseUrl.value.trim();
+        if (base) headers['X-LLM-Base-URL'] = base;
+        var model = llmModel.value.trim();
+        if (model) headers['X-LLM-Model'] = model;
+      }
+
       var resp = await fetch('/api/convert/url', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: headers,
         body: JSON.stringify({ url: url }),
         signal: controller.signal,
       });
