@@ -8,7 +8,7 @@
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://docker.com)
-[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
+[![License](https://img.shields.io/badge/License-GPL--3.0-blue?style=for-the-badge)](LICENSE)
 
 <br/>
 
@@ -228,7 +228,7 @@ Markdown Converter dibangun dengan optimasi penuh untuk mesin pencari dan AI:
 
 ## 📄 Lisensi
 
-Proyek ini dilisensikan di bawah **MIT License** — bebas digunakan, dimodifikasi, dan didistribusikan.
+Proyek ini dilisensikan di bawah **GNU General Public License v3 (GPL v3)** — bebas digunakan, dimodifikasi, dan didistribusikan.
 
 MarkItDown library oleh Microsoft dilisensikan di bawah MIT License terpisah. Lihat [microsoft/markitdown](https://github.com/microsoft/markitdown).
 
