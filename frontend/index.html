@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Markdown Converter — Free Document to Markdown Tool</title>
+  
+  <!-- Primary SEO -->
+  <meta name="description" content="Free online document converter. Convert PDF, DOCX, PPTX, XLSX, HTML, EPUB, images, and more to clean Markdown instantly. No registration needed." />
+  <meta name="keywords" content="markdown converter, pdf to markdown, docx to markdown, document converter, free online converter, markitdown" />
+  <meta name="author" content="Markdown Converter" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <link rel="canonical" href="https://markitdown.my.id/" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Markdown Converter — Free Document to Markdown Tool" />
+  <meta property="og:description" content="Convert PDF, DOCX, PPTX, XLSX, HTML, EPUB and more to clean Markdown. Free, fast, and privacy-friendly. No sign-up required." />
+  <meta property="og:url" content="https://markitdown.my.id/" />
+  <meta property="og:image" content="https://markitdown.my.id/img/og-banner.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:site_name" content="Markdown Converter" />
+  <meta property="og:locale" content="en_US" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Markdown Converter — Free Document to Markdown Tool" />
+  <meta name="twitter:description" content="Convert PDF, DOCX, PPTX, XLSX, HTML, EPUB and more to clean Markdown. Free, fast, no sign-up." />
+  <meta name="twitter:image" content="https://markitdown.my.id/img/og-banner.png" />
+
+  <!-- Theme & PWA Meta -->
+  <meta name="theme-color" content="#0f0f1a" />
+  <meta name="application-name" content="Markdown Converter" />
+  <link rel="icon" type="image/png" href="/img/favicon.png" />
+  <link rel="apple-touch-icon" href="/img/icon-180.png" />
+
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css" />
+  <!-- marked.js for Markdown rendering (CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"
+          crossorigin="anonymous" defer></script>
+  <script src="/js/i18n.js" defer></script>
+  <script src="/js/app.js" defer></script>
+</head>
+<body>
+  <!-- Ambient background glow elements -->
+  <div class="ambient-glow">
+    <div class="glow-orb glow-1"></div>
+    <div class="glow-orb glow-2"></div>
+  </div>
+
+  <div id="topLoader"></div>
+
+  <!-- Sticky Glass Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="header-logo" id="headerLogo">
+        <span class="logo-text" data-i18n="header.title">🚀 Markdown Converter</span>
+      </div>
+      <div class="header-actions">
+        <select class="lang-selector" id="langSelector" aria-label="Select language">
+          <option value="en">🇬🇧 EN</option>
+          <option value="id">🇮🇩 ID</option>
+          <option value="ja">🇯🇵 JA</option>
+          <option value="ar">🇸🇦 AR</option>
+          <option value="zh">🇨🇳 ZH</option>
+        </select>
+        <button class="theme-toggle" id="themeToggle" title="Toggle theme" aria-label="Toggle dark/light theme">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="app-container">
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <h1 class="hero-title" data-i18n="hero.title">Transform Documents to Markdown. <span class="gradient-text">Instantly.</span></h1>
+      <p class="hero-subtitle" data-i18n="hero.subtitle">
+        A free, fast, and privacy-first online converter. Upload PDF, DOCX, PPTX, XLSX, EPUB, or images and download clean Markdown files in seconds.
+      </p>
+      <div class="hero-attribution">
+        Powered by <a href="https://github.com/microsoft/markitdown" target="_blank" rel="noopener noreferrer">microsoft/markitdown</a>
+        <span class="ocr-badge" id="ocrBadge" hidden>🧠 OCR</span>
+      </div>
+    </section>
+
+    <!-- Input Section -->
+    <section class="input-section">
+      <!-- Input mode tabs -->
+      <div class="input-tabs" role="tablist">
+        <button class="input-tab active" data-tab="upload" role="tab" aria-selected="true" data-i18n="tab.file">📁 File</button>
+        <button class="input-tab" data-tab="url" role="tab" aria-selected="false" data-i18n="tab.url">🔗 URL</button>
+      </div>
+
+      <!-- Upload panel -->
+      <div class="input-panel active" id="panel-upload">
+        <div class="drop-zone" id="dropZone">
+          <div class="drop-zone-content">
+            <div class="drop-zone-icon">📂</div>
+            <p class="drop-zone-text" data-i18n="dropzone.text">Drop files here or <strong>click to browse</strong></p>
+            <p class="drop-zone-hint" data-i18n="dropzone.hint">
+              Supported: PDF, DOCX, PPTX, XLSX, HTML, CSV, EPUB, images, audio, ZIP &amp; more<br />
+              Max: 50MB per file &middot; 10 files per batch
+            </p>
+          </div>
+          <input type="file" id="fileInput" multiple hidden
+                 accept=".pdf,.docx,.pptx,.xlsx,.xls,.html,.htm,.csv,.epub,.txt,.json,.xml,.jpg,.jpeg,.png,.wav,.mp3,.zip,.msg,.rss,.md" />
+        </div>
+        <!-- File list (shown after selection) -->
+        <div class="file-list" id="fileList" hidden></div>
+        <button class="btn btn-primary" id="convertBtn" hidden data-i18n="btn.convertAll">🔄 Convert All</button>
+      </div>
+
+      <!-- URL panel -->
+      <div class="input-panel" id="panel-url">
+        <div class="url-input-group">
+          <input type="url" class="url-input" id="urlInput"
+                 data-i18n="url.placeholder" placeholder="https://example.com/article" />
+          <button class="btn btn-primary" id="urlConvertBtn" data-i18n="btn.convert">Convert</button>
+        </div>
+        <div class="url-status" id="urlStatus" hidden></div>
+      </div>
+
+      <!-- Progress bar -->
+      <div class="progress-container" id="progressContainer" hidden>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progressFill"></div>
+        </div>
+        <span class="progress-text" id="progressText">0 / 0 files</span>
+      </div>
+
+      <!-- Loading indicator -->
+      <div class="loading-overlay" id="loadingOverlay" hidden>
+        <div class="spinner"></div>
+        <p id="loadingText" data-i18n="loading.title">Converting…</p>
+      </div>
+    </section>
+
+    <!-- Results Section -->
+    <section class="results-section" id="resultsSection">
+      <!-- Result tabs -->
+      <div class="result-tabs" id="resultTabs" role="tablist"></div>
+
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <button class="toolbar-btn" id="copyBtn" title="Copy" data-i18n="toolbar.copy">📋 Copy</button>
+        <button class="toolbar-btn" id="downloadBtn" title="Download" data-i18n="toolbar.download">💾 Download</button>
+        <button class="toolbar-btn" id="downloadAllBtn" title="Download ZIP" data-i18n="toolbar.downloadAll" hidden>📦 Download All</button>
+        <button class="toolbar-btn toolbar-btn-danger" id="clearBtn" title="Clear" data-i18n="toolbar.clear">🗑️ Clear</button>
+        <button class="toolbar-btn" id="historyBtn" title="History" data-i18n="toolbar.history">🕐 History</button>
+        <label class="toolbar-toggle">
+          <input type="checkbox" id="wordWrapToggle" checked />
+          <span data-i18n="toolbar.wordWrap">Word Wrap</span>
+        </label>
+      </div>
+      <!-- History panel -->
+      <div class="history-panel" id="historyPanel" hidden>
+        <div class="history-header">
+          <span data-i18n="history.title">Recent Conversions</span>
+          <button class="history-clear-btn" id="historyClearBtn" data-i18n="history.clearAll">Clear All</button>
+        </div>
+        <div class="history-list" id="historyList"></div>
+      </div>
+
+      <!-- Split editor -->
+      <div class="editor-split">
+        <div class="editor-pane editor-left">
+          <div class="pane-label" data-i18n="editor.markdown">Markdown</div>
+          <textarea class="editor-textarea" id="editorTextarea" spellcheck="false"
+                    placeholder="Converted Markdown will appear here…"></textarea>
+          <div id="editorStats" class="editor-stats"></div>
+        </div>
+        <div class="editor-pane editor-right">
+          <div class="pane-label" data-i18n="editor.preview">Preview</div>
+          <div class="editor-preview" id="editorPreview"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Toast notification container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Static content for SEO & AI crawlers — also visible to users as "About" section -->
+    <section class="seo-content" aria-label="About Markdown Converter">
+      <h2>Free Document to Markdown Converter</h2>
+      <p>
+        <strong>Markdown Converter</strong> is a free, browser-based tool that converts documents
+        from almost any format into clean, readable <strong>Markdown (.md)</strong> text.
+        Whether you have a PDF report, a Word document (DOCX), a PowerPoint presentation (PPTX),
+        an Excel spreadsheet (XLSX), a webpage (HTML/URL), or an eBook (EPUB) — just upload and convert.
+      </p>
+      <h3>Supported File Formats</h3>
+      <ul>
+        <li><strong>Documents:</strong> PDF, DOCX, PPTX, XLSX, XLS, ODT</li>
+        <li><strong>Web:</strong> HTML, HTM, URL (any webpage)</li>
+        <li><strong>Text:</strong> TXT, CSV, JSON, XML, RSS, MD</li>
+        <li><strong>eBook:</strong> EPUB</li>
+        <li><strong>Images:</strong> JPG, JPEG, PNG (with optional OCR)</li>
+        <li><strong>Audio:</strong> WAV, MP3 (transcription)</li>
+        <li><strong>Archive:</strong> ZIP (batch extraction)</li>
+        <li><strong>Email:</strong> MSG</li>
+      </ul>
+      <h3>Key Features</h3>
+      <ul>
+        <li>✅ Completely free — no registration, no account required</li>
+        <li>✅ Convert up to 10 files at once (batch processing)</li>
+        <li>✅ Real-time Markdown preview editor</li>
+        <li>✅ Copy to clipboard or download as .md files</li>
+        <li>✅ Download batch results as a single ZIP archive</li>
+        <li>✅ Privacy-first: files are never stored on our servers</li>
+        <li>✅ Multi-language UI: English, Indonesian, Japanese, Arabic, Chinese</li>
+        <li>✅ Dark and light theme with localStorage persistence</li>
+        <li>✅ Optional OCR for scanned images via LLM vision</li>
+      </ul>
+      <h3>Built On Open Source</h3>
+      <p>
+        This tool is powered by Microsoft's <a href="https://github.com/microsoft/markitdown" rel="noopener noreferrer">markitdown</a>
+        open-source library — a Python package with 20+ document converters maintained by Microsoft.
+      </p>
+      <h3>Frequently Asked Questions</h3>
+      <details>
+        <summary>How do I convert a PDF to Markdown?</summary>
+        <p>Upload your PDF file using the drag-and-drop zone or click "browse". Then click "Convert All". Your Markdown will appear instantly in the editor.</p>
+      </details>
+      <details>
+        <summary>Can I convert a URL or webpage?</summary>
+        <p>Yes! Switch to the "URL" tab, paste the webpage URL, and click Convert. The tool will fetch and convert the page content to Markdown.</p>
+      </details>
+      <details>
+        <summary>Is my data private?</summary>
+        <p>Yes. Files are processed entirely in-memory and are never written to disk or stored on our servers. After conversion is complete, all data is immediately discarded.</p>
+      </details>
+    </section>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p>Made with love by <a href="https://alfajri.my.id/" target="_blank" rel="noopener noreferrer">alfajri</a></p>
+    </footer>
+  </div>
+
+  <!-- JSON-LD Structured Data for SEO & AI Crawlers -->
+  <!-- WebApplication Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Markdown Converter",
+    "url": "https://markitdown.my.id/",
+    "description": "Free online converter that transforms PDF, DOCX, PPTX, XLSX, HTML, EPUB, images, and audio files into clean, readable Markdown text.",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "Web",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "featureList": [
+      "Convert PDF to Markdown",
+      "Convert DOCX to Markdown",
+      "Convert PPTX to Markdown",
+      "Convert XLSX to Markdown",
+      "Convert HTML to Markdown",
+      "Convert URL to Markdown",
+      "Batch file conversion",
+      "OCR for scanned documents"
+    ],
+    "softwareVersion": "1.0.0",
+    "author": {
+      "@type": "Organization",
+      "name": "Markdown Converter"
+    },
+    "isBasedOn": {
+      "@type": "SoftwareSourceCode",
+      "name": "microsoft/markitdown",
+      "url": "https://github.com/microsoft/markitdown",
+      "author": {
+        "@type": "Organization",
+        "name": "Microsoft"
+      }
+    }
+  }
+  </script>
+
+  <!-- FAQPage Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What file formats can I convert to Markdown?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Markdown Converter supports PDF, DOCX, PPTX, XLSX, HTML, HTM, CSV, EPUB, TXT, JSON, XML, JPG, PNG, WAV, MP3, ZIP, MSG, RSS, and .md files."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is Markdown Converter free to use?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, Markdown Converter is completely free to use. No registration or account is required."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How large can my files be?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Each file can be up to 50MB in size. You can convert up to 10 files at once in a batch."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does Markdown Converter store my files?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Files are processed in memory and immediately discarded after conversion. We do not store, log, or retain any uploaded content."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the technology behind Markdown Converter?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Markdown Converter is built on top of Microsoft's open-source markitdown library (https://github.com/microsoft/markitdown), which provides 20+ document converters."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <!-- BreadcrumbList Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://markitdown.my.id/"
+      }
+    ]
+  }
+  </script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+# ai.txt — AI Crawling & Training Permission for Markdown Converter
+
+[*]
+Allow: Training
+Allow: Indexing
+Allow: Crawling
+Allow: Serving

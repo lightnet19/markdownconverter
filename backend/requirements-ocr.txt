@@ -1,0 +1,9 @@
+# ===================================================================
+# OCR dependencies for Markdown Converter
+# Install with: pip install -r backend/requirements-ocr.txt
+# Requires an LLM vision API key (e.g., OpenAI) to function
+# ===================================================================
+
+markitdown-ocr>=0.1.0
+openai>=1.0.0
+PyMuPDF>=1.24.0

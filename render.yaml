@@ -1,0 +1,38 @@
+# ===================================================================
+# Render Deployment Configuration
+# Markdown Converter
+# ===================================================================
+
+services:
+  - type: web
+    name: markitdown-converter
+    env: docker
+    repo: https://github.com/yourusername/markdownconverter
+    branch: main
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    port: 8000
+    healthCheckPath: /api/health
+    envVars:
+      - key: MAX_FILE_SIZE
+        value: "52428800"
+      - key: MAX_FILES_PER_BATCH
+        value: "10"
+      - key: REQUEST_TIMEOUT
+        value: "30"
+      - key: RATE_LIMIT_WINDOW
+        value: "60"
+      - key: RATE_LIMIT_FILE
+        value: "30"
+      - key: RATE_LIMIT_URL
+        value: "10"
+      - key: RATE_LIMIT_ZIP
+        value: "20"
+      - key: OCR_ENABLED
+        value: "false"
+      - key: LLM_API_KEY
+        value: ""
+      - key: LLM_MODEL
+        value: "gpt-4o"
+      - key: LLM_BASE_URL
+        value: ""

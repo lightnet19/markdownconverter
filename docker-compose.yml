@@ -1,0 +1,24 @@
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app/backend
+      - ./frontend:/app/frontend
+      - ./tests:/app/tests
+    environment:
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTHONUNBUFFERED=1
+      - MAX_FILE_SIZE=52428800
+      - MAX_FILES_PER_BATCH=10
+      - REQUEST_TIMEOUT=30
+      - RATE_LIMIT_FILE=30
+      - RATE_LIMIT_URL=10
+      - RATE_LIMIT_ZIP=20
+      # OCR Configuration (Requires API key and models)
+      - OCR_ENABLED=false
+      - LLM_API_KEY=
+      - LLM_MODEL=gpt-4o
+      - LLM_BASE_URL=
+    command: uvicorn backend.app:app --host 0.0.0.0 --port 8000 --reload

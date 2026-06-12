@@ -1,0 +1,56 @@
+[tool.ruff]
+# Target Python version
+target-version = "py312"
+
+# Baris maksimum (sama dengan Black default)
+line-length = 100
+
+# Direktori yang dikecualikan dari linting
+exclude = [
+    ".venv",
+    "__pycache__",
+    "draft/",
+    "*.egg-info",
+]
+
+[tool.ruff.lint]
+# Rule sets yang diaktifkan:
+# E = pycodestyle errors
+# F = pyflakes (unused imports, undefined names)
+# W = pycodestyle warnings
+# I = isort (import sorting)
+# UP = pyupgrade (modernize Python syntax)
+# B = flake8-bugbear (opinionated bug detection)
+select = ["E", "F", "W", "I", "UP", "B"]
+
+# Aturan yang dikecualikan (ignore):
+# E501 = line too long (sudah ditangani oleh line-length di atas, sering false positive)
+# B008 = do not perform function calls in default arguments
+#         (dipakai oleh FastAPI Depends() pattern)
+ignore = ["E501", "B008"]
+
+[tool.ruff.lint.isort]
+# Agar import sorting konsisten dengan FastAPI project style
+known-first-party = ["backend"]
+
+[tool.mypy]
+# Direktori/paket yang diperiksa
+files = ["backend/"]
+
+# Python version
+python_version = "3.12"
+
+# Mode: tidak strict, tapi aktifkan pengecekan penting
+warn_return_any = true
+warn_unused_configs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+
+# Abaikan library pihak ketiga yang tidak punya stubs (markitdown, dll.)
+ignore_missing_imports = true
+
+# Jangan gagalkan CI hanya karena modul tanpa type stubs
+# (markitdown, pdfplumber, pypdfium2 tidak punya stubs resmi)
+[[tool.mypy.overrides]]
+module = ["markitdown.*", "pdfplumber.*", "pypdfium2.*"]
+ignore_missing_imports = true

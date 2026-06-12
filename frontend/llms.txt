@@ -1,0 +1,31 @@
+# Markdown Converter
+
+> A free web application that converts documents (PDF, DOCX, PPTX, XLSX, HTML, EPUB, images, audio) into clean Markdown text. Built on Microsoft's markitdown library.
+
+## What it does
+
+Accepts file uploads or URLs and converts them to Markdown (.md) format using Microsoft's open-source `markitdown` Python library (https://github.com/microsoft/markitdown).
+
+## Supported formats
+
+PDF, DOCX, PPTX, XLSX, XLS, HTML, HTM, URL (web page), CSV, EPUB, TXT, JSON, XML, JPG, PNG, WAV, MP3, ZIP, MSG, RSS, MD
+
+## Key features
+
+- Free, no registration required
+- Batch conversion: up to 10 files, 50MB each
+- Real-time Markdown preview editor
+- Download as .md or batch ZIP
+- Privacy-first: files never stored on server
+- Multi-language: English, Indonesian, Japanese, Arabic, Chinese
+- Optional LLM-powered OCR
+
+## Technology stack
+
+- Backend: Python 3.12, FastAPI
+- Conversion engine: microsoft/markitdown
+- Frontend: Vanilla HTML/CSS/JavaScript
+
+## Privacy policy summary
+
+All file processing is in-memory. No files are written to disk or retained. Data is immediately discarded after conversion.
