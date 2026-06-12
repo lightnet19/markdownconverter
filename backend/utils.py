@@ -82,8 +82,43 @@ def sanitize_filename(filename: str) -> str:
 
 
 # ---------------------------------------------------------------------------
-# PDF fallback: pdfplumber → pypdfium2
+# PDF fallback helpers: pdfminer-lenient → pdfplumber → pypdfium2
 # ---------------------------------------------------------------------------
+def _is_pdf_bytes(file_bytes: bytes) -> bool:
+    """Check if the file starts with the PDF magic bytes '%PDF-'."""
+    return file_bytes[:5] == b"%PDF-"
+
+
+def _pdf_fallback_pdfminer_lenient(file_bytes: bytes, filename: str) -> str | None:
+    """
+    Try pdfminer with the lenient CachingPDFParser which tolerates
+    malformed headers (e.g. PDFs without a proper /Root object at the
+    expected offset).
+    Returns a Markdown string, or None if extraction fails.
+    """
+    try:
+        from pdfminer.high_level import extract_text_to_fp
+        from pdfminer.layout import LAParams
+
+        buf = io.BytesIO()
+        extract_text_to_fp(
+            io.BytesIO(file_bytes),
+            buf,
+            laparams=LAParams(),
+            output_type="text",
+            codec="utf-8",
+            caching=True,
+        )
+        text = buf.getvalue().decode("utf-8", errors="replace").strip()
+        if text:
+            log.info("PDF fallback (pdfminer-lenient) succeeded for '%s'", filename)
+            return text
+        return None
+    except Exception as e:
+        log.warning("PDF fallback pdfminer-lenient failed for '%s': %s", filename, e)
+        return None
+
+
 def _pdf_fallback_pdfplumber(file_bytes: bytes, filename: str) -> str | None:
     """
     Try to extract text from a PDF using pdfplumber.
@@ -95,10 +130,8 @@ def _pdf_fallback_pdfplumber(file_bytes: bytes, filename: str) -> str | None:
         lines: list[str] = []
         with pdfplumber.open(io.BytesIO(file_bytes)) as pdf:
             title = None
-            # Try to get title from PDF metadata
             if pdf.metadata:
                 title = pdf.metadata.get("Title") or None
-
             if title:
                 lines.append(f"# {title}\n")
 
@@ -108,7 +141,6 @@ def _pdf_fallback_pdfplumber(file_bytes: bytes, filename: str) -> str | None:
                     lines.append(f"\n<!-- Page {page_num} -->\n")
                     lines.append(text.strip())
 
-                # Extract tables
                 tables = page.extract_tables()
                 for table in tables:
                     if not table:
@@ -161,14 +193,21 @@ def _pdf_fallback_pypdfium2(file_bytes: bytes, filename: str) -> str | None:
 
 def _convert_pdf_with_fallbacks(file_bytes: bytes, filename: str) -> str | None:
     """
-    Attempt PDF extraction in order: pdfplumber → pypdfium2.
+    Attempt PDF extraction in order:
+      1. pdfminer (lenient/high-level)
+      2. pdfplumber
+      3. pypdfium2
     Returns the first successful Markdown text, or None.
     """
-    result = _pdf_fallback_pdfplumber(file_bytes, filename)
-    if result:
-        return result
-    result = _pdf_fallback_pypdfium2(file_bytes, filename)
-    return result
+    for fallback_fn in (
+        _pdf_fallback_pdfminer_lenient,
+        _pdf_fallback_pdfplumber,
+        _pdf_fallback_pypdfium2,
+    ):
+        result = fallback_fn(file_bytes, filename)
+        if result:
+            return result
+    return None
 
 
 # ---------------------------------------------------------------------------
@@ -189,13 +228,19 @@ def safe_convert(
     """
     safe_name = sanitize_filename(filename)
     ext = extension or os.path.splitext(filename)[1].lower()
-    is_pdf = ext in (".pdf",)
+
+    # Also detect PDF by magic bytes in case the extension is missing/wrong
+    is_pdf = ext in (".pdf",) or _is_pdf_bytes(file_bytes)
+    if is_pdf and ext != ".pdf":
+        ext = ".pdf"
+        log.info("Detected PDF by magic bytes for '%s'", safe_name)
 
     try:
         stream = io.BytesIO(file_bytes)
         stream_info = StreamInfo(
             extension=ext,
             filename=safe_name,
+            mimetype="application/pdf" if is_pdf else None,
         )
         result = md.convert_stream(stream, stream_info=stream_info)
         return {

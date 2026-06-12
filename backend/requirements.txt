@@ -1,6 +1,10 @@
 markitdown[all]
-markitdown-ocr>=0.1.0
 fastapi>=0.115.0
 uvicorn[standard]>=0.32.0
 python-multipart>=0.0.18
 httpx>=0.28.0
+slowapi>=0.1.9
+
+# PDF fallback converters — required for robust PDF handling in production
+pdfplumber>=0.11.0
+pypdfium2>=4.30.0
