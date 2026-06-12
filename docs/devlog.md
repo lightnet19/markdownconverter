@@ -11,6 +11,7 @@ Added support for user-provided LLM API Keys, Base URLs, and Model Names directl
 4. **Header Propagation**: Configured both XMLHttpRequest (for files batch) and Fetch (for URL converters) to attach the custom headers: `X-LLM-API-Key`, `X-LLM-Base-URL`, and `X-LLM-Model`.
 5. **Backend Dependency Factory**: Created a new factory function `get_custom_markitdown(api_key, base_url, model)` in `backend/deps.py` that dynamically imports `openai` and generates custom `MarkItDown` engines.
 6. **Dynamic Endpoint Evaluation**: Updated `convert_file` and `convert_url` router endpoints in `backend/routers/convert.py` to accept the request headers and spawn custom clients on-demand.
+7. **Explanatory Info Box**: Added a dynamic, multi-language description box above the API key fields, explicitly informing users that the LLM is only utilized for image OCR (and not standard documents), and clarifying security policies (keys are stored locally in the browser).
 
 ### Verification & Validation
 - Verified layout and UI styles across light and dark modes.
