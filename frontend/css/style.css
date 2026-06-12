@@ -915,6 +915,16 @@ body {
 .accordion-content[hidden] {
   display: none;
 }
+.advanced-desc {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  background: var(--bg-surface);
+  border-left: 3px solid var(--accent-primary);
+  padding: 10px 12px;
+  border-radius: 6px;
+  margin: 0 0 8px 0;
+  line-height: 1.4;
+}
 .form-group {
   display: flex;
   flex-direction: column;

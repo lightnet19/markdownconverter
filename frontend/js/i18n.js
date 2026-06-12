@@ -9,6 +9,15 @@ window.I18N = {
   flags: { en: '🇬🇧', id: '🇮🇩', ja: '🇯🇵', ar: '🇸🇦', zh: '🇨🇳' },
 
   strings: {
+    // ---- Advanced Options ----
+    'advanced.description': {
+      en: 'Provide an LLM API Key to enable <strong>OCR for Images</strong>. This is NOT required for standard documents (PDF, DOCX). Supports OpenAI-compatible APIs (DeepSeek, Kimi, local, etc.). Keys are stored locally.',
+      id: 'Masukkan LLM API Key untuk mengaktifkan <strong>OCR pada Gambar</strong>. Ini TIDAK diperlukan untuk dokumen standar (PDF, DOCX). Mendukung API yang kompatibel dengan OpenAI (DeepSeek, Kimi, lokal, dll). Kunci disimpan secara lokal.',
+      ja: '<strong>画像OCR</strong>を有効にするには、LLM APIキーを入力してください。標準ドキュメント（PDF、DOCX）には不要です。OpenAI互換API（DeepSeek、Kimi、ローカルなど）をサポート。キーはローカルに保存されます。',
+      ar: 'قدم مفتاح API LLM لتمكين <strong>التعرف الضوئي على الحروف (OCR) للصور</strong>. هذا غير مطلوب للمستندات القياسية (PDF، DOCX). يدعم واجهات برمجة التطبيقات المتوافقة مع OpenAI (DeepSeek، Kimi، محلي، إلخ). يتم تخزين المفاتيح محليًا.',
+      zh: '提供 LLM API 密钥以启用<strong>图片 OCR</strong>。标准文档（PDF、DOCX）不需要此密钥。支持兼容 OpenAI 的 API（DeepSeek、Kimi、本地等）。密钥仅保存在本地。',
+    },
+
     // ---- Header ----
     'header.title': {
       en: '🚀 Markdown <span class="logo-desc">Converter</span>',
